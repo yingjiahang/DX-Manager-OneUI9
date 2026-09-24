@@ -186,6 +186,7 @@ namespace DexManager.Models
         [DataMember(Order = 9)] public string AdditionalArguments { get; set; }
         [DataMember(Order = 10)] public bool StayAwake { get; set; }
         [DataMember(Order = 11)] public string StartAppName { get; set; }
+        [DataMember(Order = 12)] public bool LowLatencyMode { get; set; }
     }
 
     [DataContract]
@@ -209,6 +210,7 @@ namespace DexManager.Models
         [DataMember(Order = 15)] public int CustomWidth { get; set; }
         [DataMember(Order = 16)] public int CustomHeight { get; set; }
         [DataMember(Order = 17)] public bool FlexDisplay { get; set; }
+        [DataMember(Order = 18)] public bool LowLatencyMode { get; set; }
     }
 
     [DataContract]
@@ -230,6 +232,7 @@ namespace DexManager.Models
         [DataMember(Order = 14)] public int CustomWidth { get; set; }
         [DataMember(Order = 15)] public int CustomHeight { get; set; }
         [DataMember(Order = 16)] public bool FlexDisplay { get; set; }
+        [DataMember(Order = 17)] public bool LowLatencyMode { get; set; }
     }
 
     [DataContract]
