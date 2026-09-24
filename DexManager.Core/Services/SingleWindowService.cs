@@ -712,6 +712,7 @@ namespace DexManager.Services
             try
             {
                 process.PriorityClass = ProcessPriorityClass.AboveNormal;
+                process.PriorityBoostEnabled = true;
             }
             catch
             {
