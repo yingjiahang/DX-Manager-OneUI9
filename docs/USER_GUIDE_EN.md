@@ -132,6 +132,9 @@ be set up to 4096.
   scrcpy is running
 - **HID keyboard (`-K`)**: sends the keyboard as an Android input device
 - **HID mouse (`-M`)**: sends the mouse as an Android input device
+- **Low-latency video**: keeps the video buffer at zero, uses the Windows
+  Direct3D renderer hint, and gives the scrcpy client above-normal scheduling
+  priority. This preserves the selected FPS.
 - **Force-stop selected app**: stops the existing app process before launch
 - **Stay awake (`-w`)**: keeps the phone awake during the session
 
@@ -143,6 +146,10 @@ unintended settings changes or app actions.
 When HID keyboard and HID mouse are disabled, scrcpy uses its non-HID input
 mode. Mouse input is sent like direct touchscreen input, and holding a mouse
 button acts like a long press.
+
+On current scrcpy versions DX Manager selects the input mode explicitly. HID
+mouse uses `--mouse=uhid`; disabling HID mouse uses `--mouse=sdk`, which often
+feels more responsive over wireless ADB while keeping 60 FPS video.
 
 Non-HID keyboard behavior differs slightly from HID mode. English input is
 available, but the Korean/English key may not work. Use left Shift+Space to

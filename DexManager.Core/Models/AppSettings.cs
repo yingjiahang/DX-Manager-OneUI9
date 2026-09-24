@@ -10,7 +10,7 @@ namespace DexManager.Models
     [DataContract]
     public sealed class AppSettings
     {
-        public const int CurrentSchemaVersion = 25;
+        public const int CurrentSchemaVersion = 26;
 
         [DataMember(Order = 1)] public int SchemaVersion { get; set; }
         [DataMember(Order = 2)] public PathSettings Paths { get; set; }
@@ -83,14 +83,15 @@ namespace DexManager.Models
                     BitRate = "8M",
                     MaxFps = 60,
                     WindowTitle = "DX Manager - DeX Station",
-                    TurnScreenOff = true,
+                    TurnScreenOff = false,
                     UseHidKeyboard = OperatingSystem.IsWindows(),
                     UseHidMouse = OperatingSystem.IsWindows(),
                     ForceStopStartApp = false,
                     StartAppPackage = string.Empty,
                     StartAppName = string.Empty,
                     AdditionalArguments = string.Empty,
-                    StayAwake = true
+                    StayAwake = true,
+                    LowLatencyMode = true
                 },
                 Timing = new TimingSettings
                 {
@@ -376,6 +377,24 @@ namespace DexManager.Models
                     new List<DeviceWirelessConnectionProfile>();
                 SchemaVersion = defaults.SchemaVersion;
             }
+            if (oldSchemaVersion < 26)
+            {
+                Scrcpy.TurnScreenOff = false;
+                Scrcpy.LowLatencyMode = true;
+                foreach (var slot in SingleWindowSlots)
+                {
+                    if (slot == null) continue;
+                    slot.TurnScreenOff = false;
+                    slot.LowLatencyMode = true;
+                }
+                foreach (var profile in SingleWindowAppProfiles)
+                {
+                    if (profile == null) continue;
+                    profile.TurnScreenOff = false;
+                    profile.LowLatencyMode = true;
+                }
+                SchemaVersion = defaults.SchemaVersion;
+            }
             VirtualDisplay.Width = NormalizeRange(
                 VirtualDisplay.Width,
                 320,
@@ -443,6 +462,34 @@ namespace DexManager.Models
                 defaults.SingleWindowSlots[0]);
             NormalizeDeviceRunSettingsProfiles(defaults);
             NormalizeDeviceWirelessConnectionProfiles(defaults);
+            if (oldSchemaVersion < 26)
+            {
+                foreach (var profile in DeviceRunSettingsProfiles)
+                {
+                    if (profile == null) continue;
+                    if (profile.Scrcpy != null)
+                    {
+                        profile.Scrcpy.TurnScreenOff = false;
+                        profile.Scrcpy.LowLatencyMode = true;
+                    }
+                    if (profile.SingleWindowSlots != null)
+                    {
+                        foreach (var slot in profile.SingleWindowSlots)
+                        {
+                            if (slot == null) continue;
+                            slot.TurnScreenOff = false;
+                            slot.LowLatencyMode = true;
+                        }
+                    }
+                    if (profile.SingleWindowAppProfiles == null) continue;
+                    foreach (var appProfile in profile.SingleWindowAppProfiles)
+                    {
+                        if (appProfile == null) continue;
+                        appProfile.TurnScreenOff = false;
+                        appProfile.LowLatencyMode = true;
+                    }
+                }
+            }
             if (string.IsNullOrWhiteSpace(Paths.Win7AdbPath))
                 Paths.Win7AdbPath = defaults.Paths.Win7AdbPath;
             if (string.IsNullOrWhiteSpace(Paths.ScrcpyPath))
@@ -1005,7 +1052,7 @@ namespace DexManager.Models
                 Dpi = 150,
                 BitRate = "8M",
                 MaxFps = 60,
-                TurnScreenOff = true,
+                TurnScreenOff = false,
                 StayAwake = true,
                 UseHidKeyboard = OperatingSystem.IsWindows(),
                 UseHidMouse = OperatingSystem.IsWindows(),
@@ -1015,7 +1062,8 @@ namespace DexManager.Models
                 AdditionalArguments = string.Empty,
                 CustomWidth = 1600,
                 CustomHeight = 900,
-                FlexDisplay = false
+                FlexDisplay = false,
+                LowLatencyMode = true
             };
         }
 
@@ -1050,7 +1098,8 @@ namespace DexManager.Models
                 StartAppPackage = source.StartAppPackage,
                 StartAppName = source.StartAppName,
                 AdditionalArguments = source.AdditionalArguments,
-                StayAwake = source.StayAwake
+                StayAwake = source.StayAwake,
+                LowLatencyMode = source.LowLatencyMode
             };
         }
 
@@ -1087,7 +1136,8 @@ namespace DexManager.Models
                 AdditionalArguments = source.AdditionalArguments,
                 CustomWidth = source.CustomWidth,
                 CustomHeight = source.CustomHeight,
-                FlexDisplay = source.FlexDisplay
+                FlexDisplay = source.FlexDisplay,
+                LowLatencyMode = source.LowLatencyMode
             };
         }
 
@@ -1117,7 +1167,8 @@ namespace DexManager.Models
                     AdditionalArguments = profile.AdditionalArguments,
                     CustomWidth = profile.CustomWidth,
                     CustomHeight = profile.CustomHeight,
-                    FlexDisplay = profile.FlexDisplay
+                    FlexDisplay = profile.FlexDisplay,
+                    LowLatencyMode = profile.LowLatencyMode
                 });
             }
             return result;

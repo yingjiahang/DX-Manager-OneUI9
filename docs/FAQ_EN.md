@@ -332,6 +332,12 @@ When **HID mouse (`-M`)** is enabled, scrcpy sends the mouse as if it were
 physically connected to Android, so the pointer is captured by the scrcpy
 window. Press left `Alt` to release or recapture it temporarily.
 
+If HID mouse movement feels delayed over Wi-Fi, enable **Low-latency video**
+and confirm that the Windows PC and phone are on the same 5 GHz or Wi-Fi 6
+network. If the pointer is still delayed, disable HID mouse and reopen the
+session; DX Manager then uses scrcpy's SDK mouse path while keeping the video
+at the selected FPS.
+
 To move the pointer freely between Windows and DeX, disable HID mouse and
 reopen the DeX or single-app window. In this mode the mouse behaves more like
 touch input than a regular hardware mouse. For example, a side button may open

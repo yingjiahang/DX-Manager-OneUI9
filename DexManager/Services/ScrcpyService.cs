@@ -38,6 +38,16 @@ namespace DexManager.Services
             get { return MajorVersion >= 4; }
         }
 
+        public bool SupportsLowLatencyOptions
+        {
+            get { return MajorVersion >= 3; }
+        }
+
+        public bool SupportsExplicitInputModes
+        {
+            get { return MajorVersion >= 3; }
+        }
+
         public bool RequiresRightShiftWorkaround
         {
             get { return SdlMajorVersion >= 3; }
@@ -162,12 +172,14 @@ namespace DexManager.Services
                 "-S", "--turn-screen-off", "--no-power-on",
                 "--power-off-on-close", "--screen-off-timeout",
                 "-w", "--stay-awake", "--keep-active",
-                "-x", "--flex-display"
+                "-x", "--flex-display", "-K", "-M",
+                "--video-buffer", "--render-driver",
+                "--mouse", "--keyboard"
             };
         private static readonly HashSet<char> ReservedShortOptionNames =
             new HashSet<char>
             {
-                's', 'S', 'd', 'e', 'w', 'x'
+                's', 'S', 'd', 'e', 'w', 'x', 'K', 'M'
             };
         private readonly object _syncRoot = new object();
         private readonly string _scrcpyPath;
@@ -385,8 +397,27 @@ namespace DexManager.Services
                 "DX Manager - DeX Station",
                 DeviceDisplayName)));
 
-            if (settings.UseHidKeyboard) arguments.Add("-K");
-            if (settings.UseHidMouse) arguments.Add("-M");
+            if (settings.UseHidKeyboard)
+            {
+                arguments.Add(_runtimeInfo.SupportsExplicitInputModes
+                    ? "--keyboard=uhid"
+                    : "-K");
+            }
+            else if (_runtimeInfo.SupportsExplicitInputModes)
+            {
+                arguments.Add("--keyboard=sdk");
+            }
+            if (settings.UseHidMouse)
+            {
+                arguments.Add(_runtimeInfo.SupportsExplicitInputModes
+                    ? "--mouse=uhid"
+                    : "-M");
+            }
+            else if (_runtimeInfo.SupportsExplicitInputModes)
+            {
+                arguments.Add("--mouse=sdk");
+            }
+            AddLowLatencyArguments(arguments, settings);
             if (settings.StayAwake)
                 arguments.Add(_runtimeInfo.StayAwakeArgument);
             if (settings.TurnScreenOff)
@@ -411,6 +442,24 @@ namespace DexManager.Services
             }
 
             return string.Join(" ", arguments);
+        }
+
+        private void AddLowLatencyArguments(
+            IList<string> arguments,
+            ScrcpySettings settings)
+        {
+            if (settings == null || !settings.LowLatencyMode ||
+                !_runtimeInfo.SupportsLowLatencyOptions)
+            {
+                return;
+            }
+
+            // scrcpy defaults to no video buffering, but making it explicit
+            // keeps latency stable when users carry extra arguments between
+            // versions. Direct3D avoids the slower software fallback on
+            // Windows machines that expose multiple SDL renderers.
+            arguments.Add("--video-buffer=0");
+            arguments.Add("--render-driver=direct3d");
         }
 
         public static void ValidateAdditionalArguments(string arguments)
@@ -618,6 +667,7 @@ namespace DexManager.Services
                     }
 
                     process.Start();
+                    TrySetLatencyPriority(process, settings.LowLatencyMode);
                     _fileTransferCoordinator.BindProcess(
                         transferSessionId,
                         process.Id);
@@ -812,6 +862,25 @@ namespace DexManager.Services
             {
                 StartInfo = startInfo
             };
+        }
+
+        private void TrySetLatencyPriority(Process process, bool enabled)
+        {
+            if (!enabled || process == null ||
+                Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                return;
+            }
+
+            try
+            {
+                process.PriorityClass = ProcessPriorityClass.AboveNormal;
+            }
+            catch
+            {
+                // Priority changes can be denied by Windows policy. The
+                // session remains fully usable with the normal priority.
+            }
         }
 
         private void Process_Exited(object sender, EventArgs e)

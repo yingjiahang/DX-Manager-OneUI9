@@ -169,6 +169,7 @@ namespace DexManager.Forms
             _stayAwakeBox.CheckedChanged += changed;
             _useHidKeyboardBox.CheckedChanged += changed;
             _useHidMouseBox.CheckedChanged += changed;
+            _lowLatencyBox.CheckedChanged += changed;
             _forceStopAppBox.CheckedChanged += changed;
             _flexDisplayBox.CheckedChanged += changed;
             _additionalArgumentsBox.TextChanged += changed;

@@ -79,6 +79,7 @@ namespace DexManager.Forms
         private readonly CheckBox _useHidMouseBox;
         private readonly CheckBox _forceStopAppBox;
         private readonly CheckBox _flexDisplayBox;
+        private readonly CheckBox _lowLatencyBox;
         private readonly ThemedTextControl _additionalArgumentsBox;
         private readonly ThemedSelectControl _startAppBox;
         private readonly Button _loadAppsButton;
@@ -380,6 +381,10 @@ namespace DexManager.Forms
                 LocalizationService.Get("Main.StayAwake"),
                 392,
                 463);
+            _lowLatencyBox = CreateOption(
+                LocalizationService.Get("Main.LowLatency"),
+                392,
+                498);
 
             _startAppBox = CreateCustomSelect(132, 502, 313);
             _startAppBox.SelectionChangeCommitted +=
@@ -482,6 +487,7 @@ namespace DexManager.Forms
             Controls.Add(_forceStopAppBox);
             Controls.Add(_flexDisplayBox);
             Controls.Add(_stayAwakeBox);
+            Controls.Add(_lowLatencyBox);
             Controls.Add(_startAppBox);
             Controls.Add(_loadAppsButton);
             Controls.Add(_appProfileButton);
