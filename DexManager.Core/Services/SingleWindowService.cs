@@ -431,6 +431,7 @@ namespace DexManager.Services
                     }
 
                     process.Start();
+                    TrySetLatencyPriority(process, settings.LowLatencyMode);
                     _fileTransferCoordinator.BindProcess(
                         transferSessionId,
                         process.Id);
@@ -620,8 +621,35 @@ namespace DexManager.Services
                 arguments.Add(
                     settings.MaxFps.ToString(CultureInfo.InvariantCulture));
             }
-            if (settings.UseHidKeyboard && OperatingSystem.IsWindows()) arguments.Add("-K");
-            if (settings.UseHidMouse && OperatingSystem.IsWindows()) arguments.Add("-M");
+            if (settings.UseHidKeyboard && OperatingSystem.IsWindows())
+            {
+                arguments.Add(_runtimeInfo.SupportsExplicitInputModes
+                    ? "--keyboard=uhid"
+                    : "-K");
+            }
+            else if (OperatingSystem.IsWindows() &&
+                _runtimeInfo.SupportsExplicitInputModes)
+            {
+                arguments.Add("--keyboard=sdk");
+            }
+            if (settings.UseHidMouse && OperatingSystem.IsWindows())
+            {
+                arguments.Add(_runtimeInfo.SupportsExplicitInputModes
+                    ? "--mouse=uhid"
+                    : "-M");
+            }
+            else if (OperatingSystem.IsWindows() &&
+                _runtimeInfo.SupportsExplicitInputModes)
+            {
+                arguments.Add("--mouse=sdk");
+            }
+            if (settings.LowLatencyMode &&
+                _runtimeInfo.SupportsLowLatencyOptions)
+            {
+                arguments.Add("--video-buffer=0");
+                if (OperatingSystem.IsWindows())
+                    arguments.Add("--render-driver=direct3d");
+            }
             if (settings.StayAwake)
                 arguments.Add(_runtimeInfo.StayAwakeArgument);
             if (settings.FlexDisplay)
@@ -671,6 +699,24 @@ namespace DexManager.Services
                 startInfo,
                 transferSessionId);
             return new Process { StartInfo = startInfo };
+        }
+
+        private void TrySetLatencyPriority(Process process, bool enabled)
+        {
+            if (!enabled || process == null ||
+                !OperatingSystem.IsWindows())
+            {
+                return;
+            }
+
+            try
+            {
+                process.PriorityClass = ProcessPriorityClass.AboveNormal;
+            }
+            catch
+            {
+                // Priority changes can be denied by the host policy.
+            }
         }
 
         private void Process_Exited(object sender, EventArgs e)
