@@ -310,7 +310,8 @@ namespace DexManager.Forms
                 AdditionalArguments = source.AdditionalArguments,
                 CustomWidth = source.CustomWidth,
                 CustomHeight = source.CustomHeight,
-                FlexDisplay = source.FlexDisplay
+                FlexDisplay = source.FlexDisplay,
+                LowLatencyMode = source.LowLatencyMode
             };
         }
 
@@ -338,6 +339,7 @@ namespace DexManager.Forms
             target.CustomWidth = source.CustomWidth;
             target.CustomHeight = source.CustomHeight;
             target.FlexDisplay = source.FlexDisplay;
+            target.LowLatencyMode = source.LowLatencyMode;
         }
     }
 }
