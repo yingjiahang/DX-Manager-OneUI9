@@ -72,6 +72,7 @@ namespace DexManager.Forms
                 _optionsCard,
                 362,
                 _selectedMode == 0 ? 84 : 119);
+            MoveToCard(_lowLatencyBox, _optionsCard, 362, 154);
             foreach (var option in new[]
             {
                 _turnScreenOffBox,
@@ -79,7 +80,8 @@ namespace DexManager.Forms
                 _useHidMouseBox,
                 _forceStopAppBox,
                 _flexDisplayBox,
-                _stayAwakeBox
+                _stayAwakeBox,
+                _lowLatencyBox
             })
             {
                 option.Size = new Size(284, 30);
@@ -179,7 +181,8 @@ namespace DexManager.Forms
                 _useHidMouseBox,
                 _forceStopAppBox,
                 _flexDisplayBox,
-                _stayAwakeBox
+                _stayAwakeBox,
+                _lowLatencyBox
             })
             {
                 option.BackColor = _theme.CardBackground;
