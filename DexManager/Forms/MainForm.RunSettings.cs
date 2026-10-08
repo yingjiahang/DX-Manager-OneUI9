@@ -119,6 +119,7 @@ namespace DexManager.Forms
             bool stayAwake;
             bool useHidKeyboard;
             bool useHidMouse;
+            bool lowLatencyMode;
             bool forceStopStartApp;
             bool flexDisplay;
             string startAppPackage;
@@ -139,6 +140,7 @@ namespace DexManager.Forms
                 stayAwake = runSettings.Scrcpy.StayAwake;
                 useHidKeyboard = runSettings.Scrcpy.UseHidKeyboard;
                 useHidMouse = runSettings.Scrcpy.UseHidMouse;
+                lowLatencyMode = runSettings.Scrcpy.LowLatencyMode;
                 forceStopStartApp = runSettings.Scrcpy.ForceStopStartApp;
                 flexDisplay = false;
                 startAppPackage = runSettings.Scrcpy.StartAppPackage;
@@ -158,6 +160,7 @@ namespace DexManager.Forms
                 stayAwake = slot.StayAwake;
                 useHidKeyboard = slot.UseHidKeyboard;
                 useHidMouse = slot.UseHidMouse;
+                lowLatencyMode = slot.LowLatencyMode;
                 forceStopStartApp = slot.ForceStopStartApp;
                 flexDisplay = slot.FlexDisplay;
                 startAppPackage = slot.StartAppPackage;
@@ -176,6 +179,7 @@ namespace DexManager.Forms
             _stayAwakeBox.Checked = stayAwake;
             _useHidKeyboardBox.Checked = useHidKeyboard;
             _useHidMouseBox.Checked = useHidMouse;
+            _lowLatencyBox.Checked = lowLatencyMode;
             _forceStopAppBox.Checked = forceStopStartApp;
             _flexDisplayBox.Checked = flexDisplay;
             _additionalArgumentsBox.Text = additionalArguments;
@@ -471,6 +475,8 @@ namespace DexManager.Forms
                         _useHidKeyboardBox.Checked;
                     runSettings.Scrcpy.UseHidMouse =
                         _useHidMouseBox.Checked;
+                    runSettings.Scrcpy.LowLatencyMode =
+                        _lowLatencyBox.Checked;
                     runSettings.Scrcpy.ForceStopStartApp =
                         _forceStopAppBox.Checked;
                     var selectedPackage = GetSelectedAppPackage();
@@ -499,6 +505,7 @@ namespace DexManager.Forms
                     slot.StayAwake = _stayAwakeBox.Checked;
                     slot.UseHidKeyboard = _useHidKeyboardBox.Checked;
                     slot.UseHidMouse = _useHidMouseBox.Checked;
+                    slot.LowLatencyMode = _lowLatencyBox.Checked;
                     slot.ForceStopStartApp = _forceStopAppBox.Checked;
                     slot.FlexDisplay = _flexDisplayBox.Checked;
                     var selectedPackage = GetSelectedAppPackage();
