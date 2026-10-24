@@ -77,6 +77,8 @@ distribution.
 - Shared history of successfully launched apps
 - Optional per-session mini control bars with common scrcpy actions and shortcuts
 - HID keyboard and mouse support
+- Low-latency 60 FPS video mode with zero video buffering, a Direct3D
+  renderer hint on Windows, and above-normal scrcpy scheduling priority
 - Korean/English key correction and Enter/Shift+Enter switching
 - Full scrcpy-window and selected-region capture
 - Optional capture transfer to the phone
@@ -116,9 +118,17 @@ For the prebuilt macOS package, see the [macOS portable package guide](docs/PACK
 - Android Developer options and USB debugging enabled
 - A data-capable USB cable for initial authorization
 
-The currently verified phone baseline is Android 16 with One UI 8.x. One UI
-7.x and earlier have not been confirmed to work reliably and may show a black
-DeX window. Samsung firmware and device-specific behavior may still differ.
+The verified baseline now includes Android 17 / One UI 9 on a Galaxy Z Fold 8
+Ultra. DX Manager created and mirrored both a standalone 1280 x 720 display
+and a 1600 x 900 DeX-style display on that phone. One UI 7.x and earlier have
+not been confirmed to work reliably and may show a black DeX window. Samsung
+firmware and device-specific behavior may still differ.
+
+The default session profile keeps the phone screen on and enables the
+low-latency video path. HID keyboard and mouse remain available through the
+launch options. HID is selected explicitly on current scrcpy versions; if a
+wireless HID session still feels delayed, clear **HID mouse (-M)** to use
+Android's SDK pointer path while keeping 60 FPS video.
 
 Some banking, game, streaming, and security-sensitive apps may refuse to run
 when USB debugging is enabled, block protected or DRM-controlled content from
