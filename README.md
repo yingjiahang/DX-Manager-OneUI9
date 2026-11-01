@@ -19,6 +19,7 @@
   <a href="docs/USER_GUIDE_EN.md">English guide</a> ·
   <a href="docs/USER_GUIDE_KO.md">한국어 사용 설명서</a> ·
   <a href="docs/FAQ_EN.md">FAQ</a> ·
+  <a href="docs/ONEUI9_LOW_LATENCY.md">One UI 9 / low-latency notes</a> ·
   <a href="docs/FAQ_KO.md">Q&amp;A</a> ·
   <a href="docs/RELEASE_NOTES_v2.0.1.md">v2.0.1 release notes</a> ·
   <a href="DexManager/licenses/THIRD_PARTY_NOTICES.md">Third-party notices</a>
