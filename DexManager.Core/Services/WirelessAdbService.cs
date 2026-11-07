@@ -239,8 +239,13 @@ namespace DexManager.Services
 
                 _adbService.StartServer();
                 var wasConnected = IsConnected(endpoint);
-                var result = _adbService.Connect(endpoint, true);
-                if (!result.IsSuccess || !WaitForConnection(endpoint, 3000))
+                ProcessResult result = null;
+                if (!wasConnected)
+                {
+                    result = _adbService.Connect(endpoint, true);
+                }
+                if (!wasConnected &&
+                    (!result.IsSuccess || !WaitForConnection(endpoint, 3000)))
                 {
                     RollbackDeviceConnection(endpoint, wasConnected);
                     return WirelessConnectionResult.Failed(
@@ -441,8 +446,13 @@ namespace DexManager.Services
                 _adbService.StartServer();
                 var wasConnected = IsConnected(endpoint);
                 var previousTarget = _selectedSerial;
-                var result = _adbService.Connect(endpoint, true);
-                if (!result.IsSuccess || !WaitForConnection(endpoint, 3000))
+                ProcessResult result = null;
+                if (!wasConnected)
+                {
+                    result = _adbService.Connect(endpoint, true);
+                }
+                if (!wasConnected &&
+                    (!result.IsSuccess || !WaitForConnection(endpoint, 3000)))
                 {
                     RollbackConnection(
                         endpoint,
