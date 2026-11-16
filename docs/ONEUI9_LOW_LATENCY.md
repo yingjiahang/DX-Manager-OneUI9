@@ -26,6 +26,11 @@ The **Low-latency video** option adds:
   Direct3D renderer; and
 - above-normal Windows process priority for the scrcpy client.
 
+The Windows client also enables the process priority boost when the operating
+system allows it. Wireless ADB reuses an already authorized endpoint instead of
+issuing another `adb connect` for every launch, which avoids an unnecessary
+transport reset when the phone is already connected.
+
 These changes preserve the selected FPS. They do not change the phone's
 encoder workload or the Wi-Fi quality, so a busy access point can still add
 delay.
